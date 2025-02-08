@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Filter</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .filters { margin-bottom: 20px; }
+    .filters button { margin: 5px; padding: 10px; cursor: pointer; }
+    .product { border: 1px solid #ddd; padding: 10px; margin: 10px; width: 200px; display: inline-block; vertical-align: top; }
+    .product img { width: 100%; height: 150px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <h1>Product Filter</h1>
+  <div class="filters">
+    <button onclick="applyFilter('order', 'asce')">Price: Low to High</button>
+    <button onclick="applyFilter('order', 'desc')">Price: High to Low</button>
+    <button onclick="applyFilter('category', 'jewelery')">Jewelery</button>
+    <button onclick="applyFilter('category', 'men\'s clothing')">Men's Clothing</button>
+    <button onclick="applyFilter('category', 'women\'s clothing')">Women's Clothing</button>
+    <button onclick="applyFilter('category', 'electronics')">Electronics</button>
+    <button onclick="clearFilters()">Clear Filters</button>
+  </div>
+
+  <div id="products"></div>
+
+  <script>
+    let filters = {};
+
+    function applyFilter(key, value) {
+      filters[key] = value;
+      fetchProducts();
+    }
+
+    function clearFilters() {
+      filters = {};
+      fetchProducts();
+    }
+
+    function fetchProducts() {
+      const query = new URLSearchParams(filters).toString();
+      fetch(`http://localhost:3000/?${query}`)
+        .then(response => response.json())
+        .then(data => displayProducts(data));
+    }
+
+    function displayProducts(products) {
+      const container = document.getElementById('products');
+      container.innerHTML = '';
+      products.forEach(product => {
+        container.innerHTML += `
+          <div class="product">
+            <img src="${product.image}" alt="${product.title}" />
+            <h3>${product.title}</h3>
+            <p>${product.category}</p>
+            <p><strong>$${product.price}</strong></p>
+          </div>
+        `;
+      });
+    }
+
+    fetchProducts();
+  </script>
+</body>
+</html>
+
+<!-- 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Filter</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .filters button { margin: 5px; padding: 10px; cursor: pointer; }
+    .product { border: 1px solid #ddd; padding: 10px; margin: 10px; width: 200px; display: inline-block; }
+    .product img { width: 100%; height: 150px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <h1>Product Filter</h1>
+
+  <div class="filters">
+    <button onclick="filterProducts('order', 'asc')">Price: Low to High</button>
+    <button onclick="filterProducts('order', 'desc')">Price: High to Low</button>
+    <button onclick="filterProducts('category', 'jewelery')">Jewelery</button>
+    <button onclick="filterProducts('category', 'men\'s clothing')">Men's Clothing</button>
+    <button onclick="filterProducts('category', 'women\'s clothing')">Women's Clothing</button>
+    <button onclick="filterProducts('category', 'electronics')">Electronics</button>
+    <button onclick="clearFilters()">Clear Filters</button>
+  </div>
+
+  <div id="products"></div>
+
+  <script>
+    let filters = {};
+
+    function filterProducts(key, value) {
+      filters[key] = value;
+      fetchProducts();
+    }
+
+    function clearFilters() {
+      filters = {};
+      fetchProducts();
+    }
+
+    function fetchProducts() {
+      const query = new URLSearchParams(filters).toString();
+      fetch(`http://localhost:3000/?${query}`)
+        .then(response => response.json())
+        .then(products => {
+          let html = '';
+          products.forEach(product => {
+            html += `
+              <div class="product">
+                <img src="${product.image}" alt="${product.title}" />
+                <h3>${product.title}</h3>
+                <p>${product.category}</p>
+                <p><strong>$${product.price}</strong></p>
+              </div>
+            `;
+          });
+          document.getElementById('products').innerHTML = html;
+        });
+    }
+
+    fetchProducts();
+  </script>
+</body>
+</html> -->
+
+
+<!-- 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Filter</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .filters button { margin: 5px; padding: 10px; cursor: pointer; }
+    .product { border: 1px solid #ddd; padding: 10px; margin: 10px; width: 200px; display: inline-block; }
+    .product img { width: 100%; height: 150px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <h1>Product Filter</h1>
+
+  <div class="filters">
+    <button onclick="filterProducts('order', 'asc')">Price: Low to High</button>
+    <button onclick="filterProducts('order', 'desc')">Price: High to Low</button>
+    <button onclick="filterProducts('category', 'jewelery')">Jewelery</button>
+    <button onclick="filterProducts('category', 'men\'s clothing')">Men's Clothing</button>
+    <button onclick="filterProducts('category', 'women\'s clothing')">Women's Clothing</button>
+    <button onclick="filterProducts('category', 'electronics')">Electronics</button>
+    <button onclick="clearFilters()">Clear Filters</button>
+  </div>
+
+  <div id="products"></div>
+
+  <script>
+    let filters = {};
+
+    function filterProducts(key, value) {
+      filters[key] = value;
+      fetchProducts();
+    }
+
+    function clearFilters() {
+      filters = {};
+      fetchProducts();
+    }
+
+    function fetchProducts() {
+      let url = 'http://localhost:3000/?';
+      for (let key in filters) {
+        url += `${key}=${filters[key]}&`;
+      }
+
+      // Remove trailing '&' from the URL
+      url = url.slice(0, -1);
+
+      fetch(url)
+        .then(response => response.json())
+        .then(products => {
+          let html = '';
+          products.forEach(product => {
+            html += `
+              <div class="product">
+                <img src="${product.image}" alt="${product.title}" />
+                <h3>${product.title}</h3>
+                <p>${product.category}</p>
+                <p><strong>$${product.price}</strong></p>
+              </div>
+            `;
+          });
+          document.getElementById('products').innerHTML = html;
+        });
+    }
+
+    fetchProducts();
+  </script>
+</body>
+</html> -->
